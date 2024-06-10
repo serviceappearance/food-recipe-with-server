@@ -1,0 +1,8 @@
+{
+  "short_name": "food-recipe app",
+  "name": "food and recipe information",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
