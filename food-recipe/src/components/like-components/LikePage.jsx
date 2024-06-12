@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { openDB } from 'idb';
 import { Link } from "react-router-dom"
 import Header from "../Header";
+import axios from "axios";
 
 export default function LikePage(){
     return (
@@ -19,12 +20,9 @@ const LikedFood = () => {
 
     const fetchLiked = async () => {
         try {
-            const db = await initDB();
-            const tx = db.transaction('liked', 'readonly');
-            const store = tx.objectStore('liked');
-            const allLikes = await store.getAll();
-            await tx.done;
-            setLiked(allLikes)
+            const response = await axios.get("http://localhost:8080/api/user-recipe")
+            console.log(response.data[0])
+            setLiked(response.data)
             console.log("loading")
         }
         catch(error) {
@@ -35,32 +33,11 @@ const LikedFood = () => {
         }
     }
 
-    async function initDB() {
-        const dbName = 'myDatabase';  
-        const version = 2;            
-    
-        const db = await openDB(dbName, version, {
-            upgrade(db, oldVersion, newVersion, transaction) {
-                if (!db.objectStoreNames.contains('liked')) {
-                    db.createObjectStore('liked', { keyPath: 'id' });
-                }
-            },
-        });
-    
-        return db;  
-    }
-
     useEffect(()=>{
         fetchLiked()
-    },[])
-
-    const likedListStyle = {
-        width:'70rem',
-    }
-    const likedStyle = {
-        width:'50rem',
-    }
-
+        },[])
+        
+    console.log(liked)
     const deleteLiked = async(id) => {
         const db = await openDB('myDatabase', 2);
         const tx = db.transaction('liked', 'readwrite');
@@ -78,8 +55,8 @@ const LikedFood = () => {
                             <li className="flex justify-between border border-solid p-3">
                                 <span className="text-xl sm:text-lg">{item.RCP_NM}</span>
                                 <div>
-                                    <Link to={`/user_recipe/${item.id}`} className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 me-2 text-xl sm:text-lg">보기</Link>
-                                    <button className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 text-xl sm:text-lg" onClick={()=> deleteLiked(item.id)}>삭제</button>
+                                    <Link to={`/user_recipe/${item.recipe_id}`} className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 me-2 text-xl sm:text-lg">보기</Link>
+                                    <button className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 text-xl sm:text-lg" onClick={()=> deleteLiked(item.recipe_id)}>삭제</button>
                                 </div>
                             </li>
                         </div>

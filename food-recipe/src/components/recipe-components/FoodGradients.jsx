@@ -1,6 +1,6 @@
 export default function FoodGradients({recipe,gradients}) {
     const halfOfGradient = Math.ceil(gradients.length/2)
-
+    console.log(gradients)
     return (
         <div className="border border-solid rounded p-3">   
             <p className="font-semibold text-2xl sm:text-lg">재료</p>

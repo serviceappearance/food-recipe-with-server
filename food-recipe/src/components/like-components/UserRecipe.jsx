@@ -1,25 +1,20 @@
 import { useEffect, useState } from "react"
-import { openDB } from 'idb';
 import { Link, useParams } from "react-router-dom"
 import Header from "../Header";
 import FoodDisplay from "../recipe-components/FoodDisplay";
 import Step from "../recipe-components/Step";
 import FoodGradients from "../recipe-components/FoodGradients";
+import axios from "axios";
 
 export default function UserRecipe(){
     const [recipeDB,setRecipeDB] = useState({})
     const [isloading,setIsloading] = useState(true)
     const { recipeId } = useParams();
 
-    const fetchLiked = async (id) => {
+    const fetchLiked = async () => {
         try {
-            const db = await initDB();
-            const tx = db.transaction('liked', 'readonly');
-            const store = tx.objectStore('liked');
-            const likedRecipe = await store.get(id);
-            await tx.done;
-            setRecipeDB(likedRecipe)
-            console.log(likedRecipe)
+            const response = await axios.get("http://localhost:8080/api/user-recipe/"+recipeId)
+            setRecipeDB(response.data)
         }
         catch(error) {
             console.log(error)
@@ -27,21 +22,6 @@ export default function UserRecipe(){
         finally {
             setIsloading(false)
         }
-    }
-
-    async function initDB() {
-        const dbName = 'myDatabase';  
-        const version = 2;            
-    
-        const db = await openDB(dbName, version, {
-            upgrade(db) {
-                if (!db.objectStoreNames.contains('liked')) {
-                    db.createObjectStore('liked', { keyPath: 'id' });
-                }
-            },
-        });
-    
-        return db;  
     }
 
     useEffect(()=>{ 
@@ -60,7 +40,7 @@ export default function UserRecipe(){
                             <FoodDisplay recipe={recipeDB}/>
                         </header>
                         <main className="mt-8 px-8">
-                            <FoodGradients recipe={recipeDB} gradients={recipeDB.RCP_PARTS_DTLS}/>
+                            <FoodGradients recipe={recipeDB} gradients={recipeDB.ingredients}/>
                             <Step recipe={recipeDB} steps={recipeDB.steps}/>
                             <EditBtn recipeId={recipeDB.id}/>
                         </main>
