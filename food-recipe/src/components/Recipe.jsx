@@ -69,12 +69,8 @@ const Like = ({recipe}) => {
     console.log(stepList)
     async function likeRecipe(){
         try {
-            const response = await axios.post("http://localhost:8080/api/user-recipe",{
+            await axios.post("http://localhost:8080/api/user-recipe",{
                 "recipeId":recipe.RCP_SEQ,
-                "recipeTitle":recipe.RCP_NM,
-                "recipeImageLink":recipe.ATT_FILE_NO_MAIN,
-                "recipeIngredients":recipe.RCP_PARTS_DTLS.split(","),
-                "recipeSteps":stepList
             })
             
         } catch(error){

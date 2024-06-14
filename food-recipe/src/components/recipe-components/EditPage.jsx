@@ -1,8 +1,8 @@
 import { useEffect, useState,useRef } from "react"
-import { useNavigate,useLocation } from "react-router-dom"
-import { openDB } from 'idb';
+import { useNavigate,useLocation, json } from "react-router-dom"
 import Header from "../Header";
 import FoodDisplay from "../recipe-components/FoodDisplay"
+import axios from "axios";
 
 export default function EditRecipe(){
     const [recipeDB,setRecipeDB] = useState([])
@@ -15,16 +15,11 @@ export default function EditRecipe(){
     
     const fetchLiked = async () => {
         try {
-            const db = await initDB();
-            const tx = db.transaction('liked', 'readonly');
-            const store = tx.objectStore('liked');
-            const allLikes = await store.getAll();
-            const selectedRecipe = await store.get(recipeId);
-            setRecipeDB(selectedRecipe);
-            setIngredients(selectedRecipe.RCP_PARTS_DTLS || []); 
-            setSteps(selectedRecipe.steps || []);
-            await tx.done;
-            return allLikes;
+            const response = await axios.get("http://localhost:8080/api/custom-recipe/"+recipeId)
+            console.log(response.data)
+            setRecipeDB(response.data)
+            setIngredients(response.data.recipeIngredients.split(","));
+            setSteps(response.data.recipeSteps.split(","));
         }
         catch(error) {
             console.log(error)
@@ -34,20 +29,6 @@ export default function EditRecipe(){
         }
     }
     
-    async function initDB() {
-        const dbName = 'myDatabase';  
-        const version = 2;            
-    
-        const db = await openDB(dbName, version, {
-            upgrade(db) {
-                if (!db.objectStoreNames.contains('liked')) {
-                    db.createObjectStore('liked', { keyPath: 'id' });
-                }
-            }
-        });
-        
-        return db;  
-    }
     
     useEffect(()=>{ 
         fetchLiked()
@@ -78,7 +59,7 @@ export default function EditRecipe(){
 
 const UpdateBtn = (props) => {
     const navigate = useNavigate();
-    const recipeId = props.recipe.id
+    const id = props.recipe.id
     const recipeName = props.recipe.RCP_NM
     const recipeImg = props.recipe.ATT_FILE_NO_MAIN
     const ingredients = props.ingredients
@@ -86,14 +67,14 @@ const UpdateBtn = (props) => {
     
     const handleUpdate = async () => {
         const newData = {
-            id: recipeId,
+            id: id,
             RCP_NM:recipeName,
             ATT_FILE_NO_MAIN: recipeImg,
             RCP_PARTS_DTLS: ingredients,
             steps: steps
         };
         await EditedlikeSave(newData)
-        navigate(`/user_recipe/${recipeId}`);
+        navigate(`/user_recipe/${id}`);
     }
     const updateBtnStyle = {
         margin:'3rem 0 0 0'
@@ -106,19 +87,19 @@ const UpdateBtn = (props) => {
 }
 
 const EditedlikeSave = async (data) => {
-    const db = await openDB('myDatabase', 2);
-    const jsonData = {
-        id: data.id,
-        RCP_NM:data.RCP_NM,
-        ATT_FILE_NO_MAIN: data.ATT_FILE_NO_MAIN,
-        RCP_PARTS_DTLS: data.RCP_PARTS_DTLS,
-        steps: data.steps
-    };
-
-    const tx = db.transaction('liked', 'readwrite');
-    const store = tx.objectStore('liked');
-    await store.put(jsonData); 
-    await tx.done;
+    try {
+        const requestData = {
+            id:data.id,
+            recipeTitle:data.RCP_NM,
+            recipeImageLink:data.ATT_FILE_NO_MAIN,
+            recipeIngredients:JSON.stringify(data.RCP_PARTS_DTLS),
+            recipeSteps:JSON.stringify(data.steps)
+            }
+        axios.post("http://localhost:8080/api/custom-recipe",requestData)
+        console.log(typeof(data.RCP_PARTS_DTLS))
+    } catch (error) {
+        console.log(error)
+    }
 };
 
 
@@ -153,8 +134,8 @@ const FoodGradients = (props) => {
     };
 
     const removeIngredient = (index) => {
-        props.setIngredients(prev => prev.filter((_, i) => i !== index));
-        console.log(props)
+        const newIngredients = ingredients.filter((_, i) => i !== index);
+        props.setIngredients(newIngredients);
     };
 
     return (
@@ -226,7 +207,8 @@ const Step = (props) => {
     };
 
     const removeStep = (index) => {
-        props.setSteps(prev => prev.filter((_, i) => i !== index));
+        const newSteps = steps.filter((_, i) => i !== index);
+        props.setSteps(newSteps);
     };
 
     return (

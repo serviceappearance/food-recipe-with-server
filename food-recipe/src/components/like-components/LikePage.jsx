@@ -55,7 +55,7 @@ const LikedFood = () => {
                             <li className="flex justify-between border border-solid p-3">
                                 <span className="text-xl sm:text-lg">{item.RCP_NM}</span>
                                 <div>
-                                    <Link to={`/user_recipe/${item.recipe_id}`} className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 me-2 text-xl sm:text-lg">보기</Link>
+                                    <Link to={`/user_recipe/${item.id}`} className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 me-2 text-xl sm:text-lg">보기</Link>
                                     <button className="justify-self-center self-center border rounded hover:bg-slate-100 px-2 py-1 text-xl sm:text-lg" onClick={()=> deleteLiked(item.recipe_id)}>삭제</button>
                                 </div>
                             </li>
