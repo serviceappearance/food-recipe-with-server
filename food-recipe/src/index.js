@@ -65,15 +65,12 @@ const App = () => {
       <DataContext.Provider value={data}>
         <Router>
           <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/random" element={<Random />} />
             <Route path="/recipe" element={<Recipe />} />
+            <Route path="/ingredient" element={<Ingredient />} />
             <Route path="/user_recipe" element={<UserRecipe />} />
             <Route path="/user_recipe/:recipeId" element={<UserRecipe />} />
             <Route path="/edit_recipe" element={<EditRecipe />} />
             <Route path="/like_page" element={<LikePage />} />
-            <Route path="/ingredient" element={<Ingredient />} />
-            <Route path="/rank" element={<Rank />} />
           </Routes>
         </Router>
       </DataContext.Provider>
