@@ -14,15 +14,14 @@ export default function IngredientChoose() {
 
   return (
     <>
-    <div className = "flex flex-col relative"> {/* 상위 요소에 relative 추가 */}
-      <Header />
-      <div className = "top-0 pt-20 md:pt-14 w-full"> {/* pt-20 또는 적절한 값으로 조정 */}
-        {/* IngredientList에 선택 관련 props 전달 */}
-        <IngredientList onIngredientSelect = {handleSelectIngredient} selectedIngredients = {selectedIngredients} />
+      <div className = "flex flex-col relative"> {/* 상위 요소에 relative 추가 */}
+        <Header />
+        <div className = "top-0 pt-20 md:pt-14 w-full"> {/* pt-20 또는 적절한 값으로 조정 */}
+          {/* IngredientList에 선택 관련 props 전달 */}
+          <IngredientList onIngredientSelect = {handleSelectIngredient} selectedIngredients = {selectedIngredients} />
+        </div>
       </div>
-    </div>
-        <IngredientShow ingredients = {selectedIngredients} />
-
+      <IngredientShow ingredients = {selectedIngredients} />
     </>
   );
 }
