@@ -5,11 +5,12 @@ import './index.css';
 import Random from './components/Random';
 import Main from './components/Main';
 import Rank from './components/Rank';
+import NewMain from './components/NewMain';
 import Recipe from './components/Recipe';
 import LikePage from './components/like-components/LikePage';
 import UserRecipe from './components/like-components/UserRecipe';
 import EditRecipe from './components/recipe-components/EditPage';
-import Ingredient from './components/IngredientChoose';
+import IngredientChoose from './components/IngredientChoose';
 import DataContext from './context/DataContext';
 import IngredientContext from './context/IngredientContext';
 
@@ -65,8 +66,9 @@ const App = () => {
       <DataContext.Provider value={data}>
         <Router>
           <Routes>
+            <Route path="/" element={<NewMain />} />
             <Route path="/recipe" element={<Recipe />} />
-            <Route path="/ingredient" element={<Ingredient />} />
+            <Route path="/ingredient" element={<IngredientChoose />} />
             <Route path="/user_recipe" element={<UserRecipe />} />
             <Route path="/user_recipe/:recipeId" element={<UserRecipe />} />
             <Route path="/edit_recipe" element={<EditRecipe />} />
