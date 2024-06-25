@@ -9,11 +9,10 @@ import axios from "axios";
 export default function UserRecipe(){
     const [recipeDB,setRecipeDB] = useState({})
     const [isloading,setIsloading] = useState(true)
-    // const { userRecipeId } = useParams();
+    const { userRecipeId } = useParams();
 
     const fetchLiked = async () => {
         try {
-            const userRecipeId=1
             const response = await axios.get("http://localhost:8080/api/user-recipe/"+userRecipeId)
             setRecipeDB(response.data)
         }

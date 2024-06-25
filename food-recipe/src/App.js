@@ -5,7 +5,7 @@ import Recipe from "./components/Recipe";
 
 function App() {
   return (
-    <div className="App bg-slate-100">
+    <div className="App">
       <Main/>
       <Random/>
       <Recipe/>
